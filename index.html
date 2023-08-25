@@ -254,10 +254,12 @@
         });
       }
     }
-    fetchExcelAndSearch('aaaaaaaaaa','aaaaaaaaaaa','aaaaaaaaaaaaa');
-    // استدعاء الدالة لعرض الصفوف والشعب عند بدء التحميل
-    displayClassesAndSections();
+    document.addEventListener("DOMContentLoaded", function (event) {
 
+      fetchExcelAndSearch('aaaaaaaaaa', 'aaaaaaaaaaa', 'aaaaaaaaaaaaa');
+      // استدعاء الدالة لعرض الصفوف والشعب عند بدء التحميل
+      displayClassesAndSections();
+    });
   </script>
 
 
