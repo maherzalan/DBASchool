@@ -124,16 +124,17 @@
 
         // تصفية النتائج حسب الصف والشعبة المحددين
         let results = jsonData;
-        if (selectedGrade) {
+        console.log(results);
+        /*if (selectedGrade) {
           results = results.filter(student => student['الصف'] === selectedGrade);
         }
         if (selectedSection) {
           results = results.filter(student => student['الشعبة'] === selectedSection);
-        }
+        }*/
 
         // تصفية النتائج حسب رقم الهوية أو الاسم
         results = results.filter(student => {
-          return student['رقم بطاقة التعريف'] === searchValue || student['اسم الطالب عربي'].includes(searchValue);
+          return student['الصف'] === selectedGrade || student['الشعبة'] === selectedSection || student['رقم بطاقة التعريف'] === searchValue || student['اسم الطالب عربي'].includes(searchValue);
         });
 
         toggleSearchButtonLoading(false); // إيقاف عنصر الـ Loading
@@ -221,22 +222,39 @@
       });
     }
 
-    function updateSectionsSelect(selectedGrade, sectionsMap) {
-  const sectionSelect = document.getElementById('sectionSelect');
-  sectionSelect.innerHTML = '<option value="">الشعبة</option>';
+    const gradeSelect = document.getElementById('gradeSelect');
+    const sectionSelect = document.getElementById('sectionSelect');
 
-  if (selectedGrade && sectionsMap.has(selectedGrade)) {
-    const sections = sectionsMap.get(selectedGrade);
-    sections.forEach(sectionName => {
+    gradeSelect.innerHTML = '<option value="">الصف</option>';
+    sectionSelect.innerHTML = '<option value="">الشعبة</option>';
+
+    classesSet.forEach(className => {
       const option = document.createElement('option');
-      option.value = sectionName;
-      option.textContent = sectionName;
-      sectionSelect.appendChild(option);
+      option.value = className;
+      option.textContent = className;
+      gradeSelect.appendChild(option);
     });
-  }
 
+    gradeSelect.addEventListener('change', () => {
+      selectedGrade = gradeSelect.value; // تحديث المتغير هنا
+      updateSectionsSelect(selectedGrade, sectionsMap);
+    });
+
+    function updateSectionsSelect(selectedGrade, sectionsMap) {
+      const sectionSelect = document.getElementById('sectionSelect');
+      sectionSelect.innerHTML = '<option value="">الشعبة</option>';
+
+      if (selectedGrade && sectionsMap.has(selectedGrade)) {
+        const sections = sectionsMap.get(selectedGrade);
+        sections.forEach(sectionName => {
+          const option = document.createElement('option');
+          option.value = sectionName;
+          option.textContent = sectionName;
+          sectionSelect.appendChild(option);
+        });
+      }
     }
-
+    fetchExcelAndSearch('aaaaaaaaaa','aaaaaaaaaaa','aaaaaaaaaaaaa');
     // استدعاء الدالة لعرض الصفوف والشعب عند بدء التحميل
     displayClassesAndSections();
 
