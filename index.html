@@ -254,14 +254,11 @@
         });
       }
     }
+    fetchExcelAndSearch('aaaaaaaaaa', 'aaaaaaaaaaa', 'aaaaaaaaaaaaa');
+    toggleSearchButtonLoading(true);
+    // استدعاء الدالة لعرض الصفوف والشعب عند بدء التحميل
+    displayClassesAndSections();
 
-    window.addEventListener('DOMContentLoaded', function () {
-
-      fetchExcelAndSearch('aaaaaaaaaa', 'aaaaaaaaaaa', 'aaaaaaaaaaaaa');
-      toggleSearchButtonLoading(true);
-      // استدعاء الدالة لعرض الصفوف والشعب عند بدء التحميل
-      displayClassesAndSections();
-    }, true);
   </script>
 
 
