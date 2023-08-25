@@ -134,7 +134,7 @@
 
         // تصفية النتائج حسب رقم الهوية أو الاسم
         results = results.filter(student => {
-          return student['الصف'] === selectedGrade || student['الشعبة'] === selectedSection || student['رقم بطاقة التعريف'] === searchValue || student['اسم الطالب عربي'].includes(searchValue);
+          return (student['الصف'] === selectedGrade && student['الشعبة'] === selectedSection) || (student['الصف'] === selectedGrade) || student['رقم بطاقة التعريف'] === searchValue || student['اسم الطالب عربي'].includes(searchValue);
         });
 
         toggleSearchButtonLoading(false); // إيقاف عنصر الـ Loading
