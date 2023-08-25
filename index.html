@@ -1,0 +1,187 @@
+﻿<!doctype html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="Author" content="Mr.Maher Zalan">
+  <meta name="description" content="">
+  <meta name="keywords" content="Unrwa,Marks,emis">
+  <!-- Bootstrap CSS -->
+  <!-- Bootstrap CSS -->
+  <!--<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">-->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.rtl.min.css"
+    integrity="sha384-gXt9imSW0VcJVHezoNQsP+TNrjYXoGcrqBZJpry9zJt8PCQjobwmhMGaDHTASo9N" crossorigin="anonymous">
+
+  <title>البحث عن طالب في مدرسة ذكور دير البلح الاعدادية أ </title>
+</head>
+
+<body style=" background: #212424;">
+
+  <div class="card" style="width: 34rem; margin: 15px auto;">
+    <div class="card-header">
+      <h5 class="card-title">البحث عن بيانات طالب في مدرسة ذكور دير البلح الاعدادية أ</h5>
+    </div>
+    <div class="card-body" style="   background: #00ccff21;">
+
+      <p class="card-text" style="text-align: justify;">هذا التطبيق لتسهيل عملية الاستعلام عن بيانات الطلاب في مدرسة
+        ذكور دير البلح الإعدادية أ
+      <p class="fw-bold text-danger">وذلك من خلال ادخال رقم هوية الطالب</p>
+      </p>
+      <div class="card-header">
+        <span id="resultCount" class="badge bg-secondary">0 نتائج</span>
+        <div class="row">
+          <label for="searchInput" class="form-label">رقم هوية الطالب</label>
+          <div class="col-md-10">
+
+            <input class="form-control" id="searchInput" placeholder="اكتب رقم هوية الطالب" style=" direction: rtl;">
+          </div>
+          <div class="col-md-2">
+            <button id="searchButton" class="btn btn-primary">
+              <span id="searchButtonText">بحث</span>
+              <div id="searchButtonSpinner" class="spinner-border spinner-border-sm ms-2" role="status"
+                style="display: none;">
+                <span class="visually-hidden">جاري البحث...</span>
+              </div>
+            </button>
+          </div>
+          <div class="col-md-3">
+            <select class="form-select" id="gradeSelect">
+              <option value="">الصف</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <select class="form-select" id="sectionSelect">
+              <option value="">الشعبة</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="card-body">
+
+          <div id="results"></div>
+        </div>
+      </div>
+      <div class="mb-0" style="text-align:center">
+
+        Powerd By: Mr.Maher Zalan
+      </div>
+      <div class="mb-0" style="text-align:center">
+
+        Jawwal No: 0599535638
+      </div>
+    </div>
+  </div>
+  </div>
+  <script src="xlsx.full.min.js"></script>
+  <script src="myscript.js"></script>
+
+
+  <script>
+    document.getElementById('searchButton').addEventListener('click', async () => {
+  const searchInput = document.getElementById('searchInput').value;
+  toggleSearchButtonLoading(true); // تشغيل الـ Spinner في زر البحث
+  await fetchExcelAndSearch(searchInput);
+  toggleSearchButtonLoading(false); // إيقاف الـ Spinner في زر البحث
+});
+
+document.getElementById('searchInput').addEventListener('keypress', async (event) => {
+  if (event.key === 'Enter') {
+    const searchInput = document.getElementById('searchInput').value;
+    toggleSearchButtonLoading(true); // تشغيل الـ Spinner في زر البحث
+    await fetchExcelAndSearch(searchInput);
+    toggleSearchButtonLoading(false); // إيقاف الـ Spinner في زر البحث
+  }
+});
+
+let allResults = []; // لتخزين جميع النتائج بما في ذلك الصفوف والشعب
+
+async function fetchExcelAndSearch(searchValue) {
+  try {
+    const response = await fetch('data.xls', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      }
+    });
+    const arrayBuffer = await response.arrayBuffer();
+    const data = new Uint8Array(arrayBuffer);
+    const workbook = XLSX.read(data, { type: 'array' });
+    const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets['RP030Excle']);
+    allResults = jsonData;
+    const results = jsonData.filter(student => {
+      return student['رقم بطاقة التعريف'] === searchValue || student['اسم الطالب عربي'].includes(searchValue);
+    });
+    toggleSearchButtonLoading(false); // إيقاف عنصر الـ Loading
+    displayResults(results);
+  } catch (error) {
+    toggleSearchButtonLoading(false); // إيقاف عنصر الـ Loading في حالة الخطأ أيضًا
+    console.error('Error fetching or processing data:', error);
+  }
+}
+function displayResults(results) {
+  const resultsDiv = document.getElementById('results');
+  const resultCountSpan = document.getElementById('resultCount');
+
+  resultsDiv.innerHTML = '';
+
+  if (results.length > 0) {
+    resultCountSpan.textContent = `${results.length} نتائج`; // تحديث نص العدد
+    results.forEach(result => {
+      const familyMobile = result['جوال العائلة'] || 'غير متوفر';
+      const studentInfo = `
+        <div class="fw-bold text-success" style=" text-align: center;background: #fff;border-radius: 26px;padding: 7px;margin: 28px 0;">
+          <h2>${result['اسم الطالب عربي']}</h2>
+          <h3 style="color: red;">الصف: ${result['الصف']} ${result['الشعبة']}</h3>
+          <p>جوال : ${familyMobile}</p>
+        </div>
+      `;
+      resultsDiv.innerHTML += studentInfo;
+    });
+  } else {
+    resultCountSpan.textContent = '0 نتائج';
+    resultsDiv.innerHTML = '<p>عذراً لا يوجد بيانات لهذا الطالب.</p>';
+  }
+}
+
+// عرض الصفوف والشعب
+const classesAndSectionsDiv = document.getElementById('classesAndSections');
+
+function displayClassesAndSections() {
+  const classesSet = new Set();
+  const sectionsMap = new Map();
+
+  allResults.forEach(result => {
+    classesSet.add(result['الصف']);
+    if (!sectionsMap.has(result['الصف'])) {
+      sectionsMap.set(result['الصف'], new Set());
+    }
+    sectionsMap.get(result['الصف']).add(result['الشعبة']);
+  });
+
+  classesAndSectionsDiv.innerHTML = '';
+  classesSet.forEach(className => {
+    const sections = sectionsMap.get(className);
+    const sectionsString = Array.from(sections).join(', ');
+    const classSectionInfo = `
+      <div>
+        <p><strong>الصف:</strong> ${className}</p>
+        <p><strong>الشعب:</strong> ${sectionsString}</p>
+      </div>
+    `;
+    classesAndSectionsDiv.innerHTML += classSectionInfo;
+  });
+}
+
+// استدعاء الدالة لعرض الصفوف والشعب عند بدء التحميل
+displayClassesAndSections();
+
+  </script>
+
+
+
+
+</body>
+
+</html>
