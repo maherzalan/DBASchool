@@ -47,7 +47,7 @@
               <option value="">الشعبة</option>
             </select>
           </div>
-        </div>
+
           <div class="col-md-2">
             <button id="searchButton" class="btn btn-primary">
               <span id="searchButtonText">بحث</span>
@@ -57,7 +57,8 @@
               </div>
             </button>
           </div>
-          
+        </div>
+
 
         <div class="card-body">
 
@@ -81,48 +82,48 @@
 
   <script>
     document.getElementById('searchButton').addEventListener('click', async () => {
-  const searchInput = document.getElementById('searchInput').value;
-  toggleSearchButtonLoading(true); // تشغيل الـ Spinner في زر البحث
-  await fetchExcelAndSearch(searchInput);
-  toggleSearchButtonLoading(false); // إيقاف الـ Spinner في زر البحث
-});
+      const searchInput = document.getElementById('searchInput').value;
+      toggleSearchButtonLoading(true); // تشغيل الـ Spinner في زر البحث
+      await fetchExcelAndSearch(searchInput);
+      toggleSearchButtonLoading(false); // إيقاف الـ Spinner في زر البحث
+    });
 
-document.getElementById('searchInput').addEventListener('keypress', async (event) => {
-  if (event.key === 'Enter') {
-    const searchInput = document.getElementById('searchInput').value;
-    toggleSearchButtonLoading(true); // تشغيل الـ Spinner في زر البحث
-    await fetchExcelAndSearch(searchInput);
-    toggleSearchButtonLoading(false); // إيقاف الـ Spinner في زر البحث
-  }
-});
-
-let allResults = []; // لتخزين جميع النتائج بما في ذلك الصفوف والشعب
-
-async function fetchExcelAndSearch(searchValue) {
-  try {
-    const response = await fetch('data.xls', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    document.getElementById('searchInput').addEventListener('keypress', async (event) => {
+      if (event.key === 'Enter') {
+        const searchInput = document.getElementById('searchInput').value;
+        toggleSearchButtonLoading(true); // تشغيل الـ Spinner في زر البحث
+        await fetchExcelAndSearch(searchInput);
+        toggleSearchButtonLoading(false); // إيقاف الـ Spinner في زر البحث
       }
     });
-    const arrayBuffer = await response.arrayBuffer();
-    const data = new Uint8Array(arrayBuffer);
-    const workbook = XLSX.read(data, { type: 'array' });
-    const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets['RP030Excle']);
-    allResults = jsonData;
-    const results = jsonData.filter(student => {
-      return student['رقم بطاقة التعريف'] === searchValue || student['اسم الطالب عربي'].includes(searchValue);
-    });
-    toggleSearchButtonLoading(false); // إيقاف عنصر الـ Loading
-    displayResults(results);
-  } catch (error) {
-    toggleSearchButtonLoading(false); // إيقاف عنصر الـ Loading في حالة الخطأ أيضًا
-    console.error('Error fetching or processing data:', error);
-  }
-}
 
-function toggleSearchButtonLoading(loading) {
+    let allResults = []; // لتخزين جميع النتائج بما في ذلك الصفوف والشعب
+
+    async function fetchExcelAndSearch(searchValue) {
+      try {
+        const response = await fetch('data.xls', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+          }
+        });
+        const arrayBuffer = await response.arrayBuffer();
+        const data = new Uint8Array(arrayBuffer);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets['RP030Excle']);
+        allResults = jsonData;
+        const results = jsonData.filter(student => {
+          return student['رقم بطاقة التعريف'] === searchValue || student['اسم الطالب عربي'].includes(searchValue);
+        });
+        toggleSearchButtonLoading(false); // إيقاف عنصر الـ Loading
+        displayResults(results);
+      } catch (error) {
+        toggleSearchButtonLoading(false); // إيقاف عنصر الـ Loading في حالة الخطأ أيضًا
+        console.error('Error fetching or processing data:', error);
+      }
+    }
+
+    function toggleSearchButtonLoading(loading) {
       const searchButton = document.getElementById('searchButton');
       const searchButtonText = document.getElementById('searchButtonText');
       const searchButtonSpinner = document.getElementById('searchButtonSpinner');
@@ -137,63 +138,63 @@ function toggleSearchButtonLoading(loading) {
         searchButton.disabled = false; // تفعيل الزر بعد الإنتهاء من البحث
       }
     }
-    
-function displayResults(results) {
-  const resultsDiv = document.getElementById('results');
-  const resultCountSpan = document.getElementById('resultCount');
 
-  resultsDiv.innerHTML = '';
+    function displayResults(results) {
+      const resultsDiv = document.getElementById('results');
+      const resultCountSpan = document.getElementById('resultCount');
 
-  if (results.length > 0) {
-    resultCountSpan.textContent = `${results.length} نتائج`; // تحديث نص العدد
-    results.forEach(result => {
-      const familyMobile = result['جوال العائلة'] || 'غير متوفر';
-      const studentInfo = `
+      resultsDiv.innerHTML = '';
+
+      if (results.length > 0) {
+        resultCountSpan.textContent = `${results.length} نتائج`; // تحديث نص العدد
+        results.forEach(result => {
+          const familyMobile = result['جوال العائلة'] || 'غير متوفر';
+          const studentInfo = `
         <div class="fw-bold text-success" style=" text-align: center;background: #fff;border-radius: 26px;padding: 7px;margin: 28px 0;">
           <h2>${result['اسم الطالب عربي']}</h2>
           <h3 style="color: red;">الصف: ${result['الصف']} ${result['الشعبة']}</h3>
           <p>جوال : ${familyMobile}</p>
         </div>
       `;
-      resultsDiv.innerHTML += studentInfo;
-    });
-  } else {
-    resultCountSpan.textContent = '0 نتائج';
-    resultsDiv.innerHTML = '<p>عذراً لا يوجد بيانات لهذا الطالب.</p>';
-  }
-}
-
-// عرض الصفوف والشعب
-const classesAndSectionsDiv = document.getElementById('classesAndSections');
-
-function displayClassesAndSections() {
-  const classesSet = new Set();
-  const sectionsMap = new Map();
-
-  allResults.forEach(result => {
-    classesSet.add(result['الصف']);
-    if (!sectionsMap.has(result['الصف'])) {
-      sectionsMap.set(result['الصف'], new Set());
+          resultsDiv.innerHTML += studentInfo;
+        });
+      } else {
+        resultCountSpan.textContent = '0 نتائج';
+        resultsDiv.innerHTML = '<p>عذراً لا يوجد بيانات لهذا الطالب.</p>';
+      }
     }
-    sectionsMap.get(result['الصف']).add(result['الشعبة']);
-  });
 
-  classesAndSectionsDiv.innerHTML = '';
-  classesSet.forEach(className => {
-    const sections = sectionsMap.get(className);
-    const sectionsString = Array.from(sections).join(', ');
-    const classSectionInfo = `
+    // عرض الصفوف والشعب
+    const classesAndSectionsDiv = document.getElementById('classesAndSections');
+
+    function displayClassesAndSections() {
+      const classesSet = new Set();
+      const sectionsMap = new Map();
+
+      allResults.forEach(result => {
+        classesSet.add(result['الصف']);
+        if (!sectionsMap.has(result['الصف'])) {
+          sectionsMap.set(result['الصف'], new Set());
+        }
+        sectionsMap.get(result['الصف']).add(result['الشعبة']);
+      });
+
+      classesAndSectionsDiv.innerHTML = '';
+      classesSet.forEach(className => {
+        const sections = sectionsMap.get(className);
+        const sectionsString = Array.from(sections).join(', ');
+        const classSectionInfo = `
       <div>
         <p><strong>الصف:</strong> ${className}</p>
         <p><strong>الشعب:</strong> ${sectionsString}</p>
       </div>
     `;
-    classesAndSectionsDiv.innerHTML += classSectionInfo;
-  });
-}
+        classesAndSectionsDiv.innerHTML += classSectionInfo;
+      });
+    }
 
-// استدعاء الدالة لعرض الصفوف والشعب عند بدء التحميل
-displayClassesAndSections();
+    // استدعاء الدالة لعرض الصفوف والشعب عند بدء التحميل
+    displayClassesAndSections();
 
   </script>
 
