@@ -82,47 +82,64 @@
 
   <script>
     document.getElementById('searchButton').addEventListener('click', async () => {
+    const searchInput = document.getElementById('searchInput').value;
+    const selectedGrade = document.getElementById('gradeSelect').value;
+    const selectedSection = document.getElementById('sectionSelect').value;
+
+    toggleSearchButtonLoading(true); // تشغيل الـ Spinner في زر البحث
+    await fetchExcelAndSearch(searchInput, selectedGrade, selectedSection);
+    toggleSearchButtonLoading(false); // إيقاف الـ Spinner في زر البحث
+  });
+
+  document.getElementById('searchInput').addEventListener('keypress', async (event) => {
+    if (event.key === 'Enter') {
       const searchInput = document.getElementById('searchInput').value;
+      const selectedGrade = document.getElementById('gradeSelect').value;
+      const selectedSection = document.getElementById('sectionSelect').value;
+
       toggleSearchButtonLoading(true); // تشغيل الـ Spinner في زر البحث
-      await fetchExcelAndSearch(searchInput);
+      await fetchExcelAndSearch(searchInput, selectedGrade, selectedSection);
       toggleSearchButtonLoading(false); // إيقاف الـ Spinner في زر البحث
-    });
-
-    document.getElementById('searchInput').addEventListener('keypress', async (event) => {
-      if (event.key === 'Enter') {
-        const searchInput = document.getElementById('searchInput').value;
-        toggleSearchButtonLoading(true); // تشغيل الـ Spinner في زر البحث
-        await fetchExcelAndSearch(searchInput);
-        toggleSearchButtonLoading(false); // إيقاف الـ Spinner في زر البحث
-      }
-    });
-
-    let allResults = []; // لتخزين جميع النتائج بما في ذلك الصفوف والشعب
-
-    async function fetchExcelAndSearch(searchValue) {
-      try {
-        const response = await fetch('data.xls', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-          }
-        });
-        const arrayBuffer = await response.arrayBuffer();
-        const data = new Uint8Array(arrayBuffer);
-        const workbook = XLSX.read(data, { type: 'array' });
-        const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets['RP030Excle']);
-        allResults = jsonData;
-        const results = jsonData.filter(student => {
-          return student['رقم بطاقة التعريف'] === searchValue || student['اسم الطالب عربي'].includes(searchValue);
-        });
-        toggleSearchButtonLoading(false); // إيقاف عنصر الـ Loading
-        displayResults(results);
-      } catch (error) {
-        toggleSearchButtonLoading(false); // إيقاف عنصر الـ Loading في حالة الخطأ أيضًا
-        console.error('Error fetching or processing data:', error);
-      }
     }
+  });
 
+  // الدالة الجديدة تأخذ بعين الاعتبار الصف والشعبة المحددين
+  async function fetchExcelAndSearch(searchValue, selectedGrade, selectedSection) {
+    try {
+      const response = await fetch('data.xls', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        }
+      });
+      const arrayBuffer = await response.arrayBuffer();
+      const data = new Uint8Array(arrayBuffer);
+      const workbook = XLSX.read(data, { type: 'array' });
+      const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets['RP030Excle']);
+      allResults = jsonData;
+
+      let results = jsonData;
+
+      // تصفية النتائج حسب الصف والشعبة المحددين
+      if (selectedGrade) {
+        results = results.filter(student => student['الصف'] === selectedGrade);
+      }
+      if (selectedSection) {
+        results = results.filter(student => student['الشعبة'] === selectedSection);
+      }
+
+      // تصفية النتائج حسب رقم الهوية أو الاسم
+      results = results.filter(student => {
+        return student['رقم بطاقة التعريف'] === searchValue || student['اسم الطالب عربي'].includes(searchValue);
+      });
+
+      toggleSearchButtonLoading(false); // إيقاف عنصر الـ Loading
+      displayResults(results);
+    } catch (error) {
+      toggleSearchButtonLoading(false); // إيقاف عنصر الـ Loading في حالة الخطأ أيضًا
+      console.error('Error fetching or processing data:', error);
+    }
+  }
     function toggleSearchButtonLoading(loading) {
       const searchButton = document.getElementById('searchButton');
       const searchButtonText = document.getElementById('searchButtonText');
