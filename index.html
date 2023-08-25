@@ -142,6 +142,21 @@
     console.error('Error fetching or processing data:', error);
   }
 }
+    function toggleSearchButtonLoading(loading) {
+      const searchButton = document.getElementById('searchButton');
+      const searchButtonText = document.getElementById('searchButtonText');
+      const searchButtonSpinner = document.getElementById('searchButtonSpinner');
+
+      if (loading) {
+        searchButtonText.style.display = 'none';
+        searchButtonSpinner.style.display = 'inline-block';
+        searchButton.disabled = true; // تعطيل الزر أثناء الـ Spinner
+      } else {
+        searchButtonText.style.display = 'inline-block';
+        searchButtonSpinner.style.display = 'none';
+        searchButton.disabled = false; // تفعيل الزر بعد الإنتهاء من البحث
+      }
+    }
 
     function displayResults(results) {
       const resultsDiv = document.getElementById('results');
