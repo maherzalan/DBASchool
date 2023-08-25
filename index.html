@@ -179,18 +179,39 @@
         sectionsMap.get(result['الصف']).add(result['الشعبة']);
       });
 
-      classesAndSectionsDiv.innerHTML = '';
+      const gradeSelect = document.getElementById('gradeSelect');
+      const sectionSelect = document.getElementById('sectionSelect');
+
+      gradeSelect.innerHTML = '<option value="">الصف</option>';
+      sectionSelect.innerHTML = '<option value="">الشعبة</option>';
+
       classesSet.forEach(className => {
-        const sections = sectionsMap.get(className);
-        const sectionsString = Array.from(sections).join(', ');
-        const classSectionInfo = `
-      <div>
-        <p><strong>الصف:</strong> ${className}</p>
-        <p><strong>الشعب:</strong> ${sectionsString}</p>
-      </div>
-    `;
-        classesAndSectionsDiv.innerHTML += classSectionInfo;
+        const option = document.createElement('option');
+        option.value = className;
+        option.textContent = className;
+        gradeSelect.appendChild(option);
       });
+
+      // استدعاء دالة لتحديث قائمة الشعب بناءً على الصف المحدد
+      gradeSelect.addEventListener('change', () => {
+        const selectedGrade = gradeSelect.value;
+        updateSectionsSelect(selectedGrade, sectionsMap);
+      });
+    }
+
+    function updateSectionsSelect(selectedGrade, sectionsMap) {
+      const sectionSelect = document.getElementById('sectionSelect');
+      sectionSelect.innerHTML = '<option value="">الشعبة</option>';
+
+      if (selectedGrade) {
+        const sections = sectionsMap.get(selectedGrade);
+        sections.forEach(sectionName => {
+          const option = document.createElement('option');
+          option.value = sectionName;
+          option.textContent = sectionName;
+          sectionSelect.appendChild(option);
+        });
+      }
     }
 
     // استدعاء الدالة لعرض الصفوف والشعب عند بدء التحميل
