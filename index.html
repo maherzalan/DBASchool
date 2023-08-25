@@ -254,12 +254,13 @@
         });
       }
     }
-    document.addEventListener("DOMContentLoaded", function (event) {
 
+    window.addEventListener('DOMContentLoaded', function () {
+      console.log('window - DOMContentLoaded - capture'); // 1st
       fetchExcelAndSearch('aaaaaaaaaa', 'aaaaaaaaaaa', 'aaaaaaaaaaaaa');
       // استدعاء الدالة لعرض الصفوف والشعب عند بدء التحميل
       displayClassesAndSections();
-    });
+    }, true);
   </script>
 
 
