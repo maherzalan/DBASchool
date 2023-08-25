@@ -17,7 +17,7 @@
   <title>البحث عن طالب في مدرسة ذكور دير البلح الاعدادية أ </title>
 </head>
 
-<body style=" background: #212424;">
+<body onload="startpage()" style=" background: #212424;">
 
   <div class="card" style="width: 34rem; margin: 15px auto;">
     <div class="card-header">
@@ -254,10 +254,12 @@
         });
       }
     }
+    function startpage(){
     fetchExcelAndSearch('aaaaaaaaaa', 'aaaaaaaaaaa', 'aaaaaaaaaaaaa');
     toggleSearchButtonLoading(true);
     // استدعاء الدالة لعرض الصفوف والشعب عند بدء التحميل
     displayClassesAndSections();
+    }
 
   </script>
 
