@@ -17,7 +17,7 @@
   <title>البحث عن طالب في مدرسة ذكور دير البلح الاعدادية أ </title>
 </head>
 
-<body onload="fetchExcelAndSearch('aaaaaaaaaa', 'aaaaaaaaaaa', 'aaaaaaaaaaaaa')" style=" background: #212424;">
+<body style=" background: #212424;">
 
   <div class="card" style="width: 34rem; margin: 15px auto;">
     <div class="card-header">
@@ -256,8 +256,9 @@
     }
 
     window.addEventListener('DOMContentLoaded', function () {
-      console.log('window - DOMContentLoaded - capture'); // 1st
+
       fetchExcelAndSearch('aaaaaaaaaa', 'aaaaaaaaaaa', 'aaaaaaaaaaaaa');
+      toggleSearchButtonLoading(true);
       // استدعاء الدالة لعرض الصفوف والشعب عند بدء التحميل
       displayClassesAndSections();
     }, true);
