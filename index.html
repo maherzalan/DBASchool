@@ -124,37 +124,28 @@
 
         // تصفية النتائج حسب الصف والشعبة المحددين
         let results = jsonData;
-        console.log(results);
-        /*if (selectedGrade) {
+        if (selectedGrade && selectedSection) {
+          results = results.filter(student => student['الصف'] === selectedGrade && student['الشعبة'] == selectedSection);
+        } else if (selectedGrade) {
           results = results.filter(student => student['الصف'] === selectedGrade);
         }
-        if (selectedSection) {
-          results = results.filter(student => student['الشعبة'] === selectedSection);
-        }*/
 
-        // تصفية النتائج حسب رقم الهوية أو الاسم
-        /*results = results.filter(student => {
-          return (student['الصف'] === selectedGrade && student['الشعبة'] === selectedSection) || (student['الصف'] === selectedGrade) || student['رقم بطاقة التعريف'] === searchValue || student['اسم الطالب عربي'].includes(searchValue);
-        });*/
-        results = results.filter(student => {
-          const matchesGradeAndSection = (!selectedGrade || student['الصف'] === selectedGrade) &&
-            (!selectedSection || student['الشعبة'] === selectedSection);
+        if (searchValue) {
+          results = results.filter(student => student['رقم بطاقة التعريف'] === searchValue || student['اسم الطالب عربي'].includes(searchValue));
+        }
 
-          const matchesSearchValue = student['رقم بطاقة التعريف'] === searchValue || student['اسم الطالب عربي'].includes(searchValue);
-
-          return matchesGradeAndSection || matchesSearchValue;
-        });
-
-        toggleSearchButtonLoading(false); // إيقاف عنصر الـ Loading
+        toggleSearchButtonLoading(false);
         displayResults(results);
 
         // بعد تحميل البيانات، يتم استدعاء دالة displayClassesAndSections
-        displayClassesAndSections();
+        //displayClassesAndSections();
       } catch (error) {
         toggleSearchButtonLoading(false); // إيقاف عنصر الـ Loading في حالة الخطأ أيضًا
         console.error('Error fetching or processing data:', error);
       }
     }
+
+
     function toggleSearchButtonLoading(loading) {
       const searchButton = document.getElementById('searchButton');
       const searchButtonText = document.getElementById('searchButtonText');
