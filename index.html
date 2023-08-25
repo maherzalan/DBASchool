@@ -138,7 +138,7 @@
         displayResults(results);
 
         // بعد تحميل البيانات، يتم استدعاء دالة displayClassesAndSections
-        //displayClassesAndSections();
+        if(selectedGrade === 'aaaaaaaaaa' && selectedGrade === 'aaaaaaaaaa' && selectedGrade === 'aaaaaaaaaa')displayClassesAndSections();
       } catch (error) {
         toggleSearchButtonLoading(false); // إيقاف عنصر الـ Loading في حالة الخطأ أيضًا
         console.error('Error fetching or processing data:', error);
@@ -254,7 +254,7 @@
       }
     }
     function startpage() {
-      fetchExcelAndSearch('aaaaaaaaaa', 'aaaaaaaaaaa', 'aaaaaaaaaaaaa');
+      fetchExcelAndSearch('aaaaaaaaaa', 'aaaaaaaaaa', 'aaaaaaaaaa');
       toggleSearchButtonLoading(true);
       // استدعاء الدالة لعرض الصفوف والشعب عند بدء التحميل
       displayClassesAndSections();
