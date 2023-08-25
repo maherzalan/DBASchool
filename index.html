@@ -102,7 +102,7 @@
       toggleSearchButtonLoading(false); // إيقاف الـ Spinner في زر البحث
     }
   });
-
+  let allResults = []; // تعريف المتغير هنا
   // الدالة الجديدة تأخذ بعين الاعتبار الصف والشعبة المحددين
   async function fetchExcelAndSearch(searchValue, selectedGrade, selectedSection) {
     try {
