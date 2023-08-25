@@ -133,8 +133,16 @@
         }*/
 
         // تصفية النتائج حسب رقم الهوية أو الاسم
-        results = results.filter(student => {
+        /*results = results.filter(student => {
           return (student['الصف'] === selectedGrade && student['الشعبة'] === selectedSection) || (student['الصف'] === selectedGrade) || student['رقم بطاقة التعريف'] === searchValue || student['اسم الطالب عربي'].includes(searchValue);
+        });*/
+        results = results.filter(student => {
+          const matchesGradeAndSection = (!selectedGrade || student['الصف'] === selectedGrade) &&
+            (!selectedSection || student['الشعبة'] === selectedSection);
+
+          const matchesSearchValue = student['رقم بطاقة التعريف'] === searchValue || student['اسم الطالب عربي'].includes(searchValue);
+
+          return matchesGradeAndSection || matchesSearchValue;
         });
 
         toggleSearchButtonLoading(false); // إيقاف عنصر الـ Loading
@@ -254,11 +262,11 @@
         });
       }
     }
-    function startpage(){
-    fetchExcelAndSearch('aaaaaaaaaa', 'aaaaaaaaaaa', 'aaaaaaaaaaaaa');
-    toggleSearchButtonLoading(true);
-    // استدعاء الدالة لعرض الصفوف والشعب عند بدء التحميل
-    displayClassesAndSections();
+    function startpage() {
+      fetchExcelAndSearch('aaaaaaaaaa', 'aaaaaaaaaaa', 'aaaaaaaaaaaaa');
+      toggleSearchButtonLoading(true);
+      // استدعاء الدالة لعرض الصفوف والشعب عند بدء التحميل
+      displayClassesAndSections();
     }
 
   </script>
