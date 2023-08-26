@@ -193,11 +193,18 @@
         resultCountSpan.textContent = `${results.length} نتائج`; // تحديث نص العدد
         results.forEach(result => {
           const familyMobile = result['جوال العائلة'] || 'غير متوفر';
+          const familyTel = result['تليفون العائلة'] || 'غير متوفر';
           const studentInfo = `
         <div class="fw-bold text-success" style=" text-align: center;background: #fff;border-radius: 26px;padding: 7px;margin: 28px 0;">
           <h2>${result['اسم الطالب عربي']}</h2>
           <h3 style="color: red;">الصف: ${result['الصف']} ${result['الشعبة']}</h3>
-          <p>جوال : ${familyMobile}</p>
+          <p>العنوان : ${result['العنوان']}</p>
+          <p>جوال : <a href="tel:${familyMobile}">${familyMobile}</a>  </p>
+          <p>تلفون : <a href="tel:${familyTel}">${familyTel}</a>  </p>
+          <p>معدل العام السابق : ${result['معدل الطالب العام السابق']}</p>
+          <p>هل لديه مرض : ${result['"هل لديه مرض مزمن"']}</p>
+          <p>مهنة ولي الأمر : ${result['مهنة ولي الأمر']}</p>
+          <p>اسم الام: ${result['اسم الأم']}</p>
         </div>
       `;
           resultsDiv.innerHTML += studentInfo;
