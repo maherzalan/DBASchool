@@ -5,6 +5,22 @@
 </head>
 <body>
     <h1>Excel Viewer</h1>
-    <iframe src="https://emis.unrwa.org/Administrative/Home/GetStudentLeaveInDateRangeRep?ScholasticYearID=20232&GenderId=&LeaveFrom=29/08/2023&LeaveTo=29/08/2023&GradeId=&SectionId=&AreaId=8&SchoolId=20945&Type=Excel"></iframe>
+    <div id="excel-container"></div>
+
+    <script>
+        // URL to the Excel file
+        var excelURL = "https://emis.unrwa.org/Administrative/Home/GetStudentLeaveInDateRangeRep?ScholasticYearID=20232&GenderId=&LeaveFrom=29/08/2023&LeaveTo=29/08/2023&GradeId=&SectionId=&AreaId=8&SchoolId=20945&Type=Excel";
+
+        // Create an iframe to display the Excel content
+        var excelIframe = document.createElement("iframe");
+        excelIframe.src = excelURL;
+        excelIframe.style.width = "100%";
+        excelIframe.style.height = "600px";
+        excelIframe.style.border = "none";
+
+        // Add the iframe to the container
+        var excelContainer = document.getElementById("excel-container");
+        excelContainer.appendChild(excelIframe);
+    </script>
 </body>
 </html>
