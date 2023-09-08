@@ -104,53 +104,7 @@
   <script src="xlsx.full.min.js"></script>
   <script src="myscript.js"></script>
   <script>
-const response = await fetch('data.xls', {
-  method: 'GET',
-  headers: {
-    'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-  }
-});
-const arrayBuffer = await response.arrayBuffer();
-const data = new Uint8Array(arrayBuffer);
-const workbook = XLSX.read(data, { type: 'array' });
-const response = await fetch('data.xls', {
-  method: 'GET',
-  headers: {
-    'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-  }
-});
-const arrayBuffer = await response.arrayBuffer();
-const data = new Uint8Array(arrayBuffer);
-const workbook = XLSX.read(data, { type: 'array' });
-const sheetName = 'RP030Excle';
-const worksheet = workbook.Sheets[sheetName];
-    document.getElementById('saveButton').addEventListener('click', () => {
-  const newA10Value = document.getElementById('cellA10Value').value;
-  
-  // قم بتحديث القيمة في النموذج على الصفحة
-  worksheet['A10'].v = newA10Value;
-  
-  // قم بحفظ التعديلات في ملف Excel مجددًا وقم بإرساله إلى الخادم إذا كان ذلك ضروريًا
-  // بعد التعديلات، حفظ التغييرات في الملف
-const newWorkbook = XLSX.utils.book_new();
-XLSX.utils.book_append_sheet(newWorkbook, worksheet, sheetName);
-const newFileData = XLSX.write(newWorkbook, { type: 'blob', mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
 
-// إرسال الملف إلى الخادم (مثال على كيفية استخدام fetch)
-fetch('/upload', {
-  method: 'POST', // أو أي طريقة أخرى تلائم خادمك
-  body: newFileData,
-  headers: {
-    'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-  }
-})
-.then(response => {
-  // قد ترغب في معالجة استجابة الخادم هنا
-})
-.catch(error => {
-  console.error('Error uploading file:', error);
-});
-});
     
     document.getElementById('searchButton').addEventListener('click', async () => {
       const searchInput = document.getElementById('searchInput').value;
