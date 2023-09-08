@@ -290,6 +290,33 @@
       displayClassesAndSections();
     }
 
+fetch('data.xlsx')
+  .then(response => response.arrayBuffer())
+  .then(arrayBuffer => {
+    const data = new Uint8Array(arrayBuffer);
+    const workbook = XLSX.read(data, { type: 'array' });
+    const sheetName = workbook.SheetNames[0]; // اسم الورقة التي تريد التعديل عليها
+    const worksheet = workbook.Sheets[sheetName];
+    
+    // الآن يمكنك القراءة والتعديل على البيانات في الملف
+    // على سبيل المثال، للوصول إلى قيمة معينة:
+    const cellValue = worksheet['A1'].v; // استخدم اسم الخلية المطلوبة هنا
+    // قم بإجراء التعديلات اللازمة على البيانات
+  })
+  .catch(error => {
+    console.error('Error loading Excel file:', error);
+  });
+
+// على سبيل المثال، لحفظ تعديل في خلية A1:
+worksheet['A1'].v = 'القيمة الجديدة';
+
+// بعد القيام بجميع التعديلات اللازمة، يمكن حفظ الملف مرة أخرى:
+const newWorkbook = XLSX.utils.book_new();
+XLSX.utils.book_append_sheet(newWorkbook, worksheet, sheetName);
+const newFileData = XLSX.write(newWorkbook, { type: 'array', bookType: 'xlsx' });
+
+// إرسال ملف البيانات للخادم إذا كنت بحاجة إلى حفظ التغييرات على الخادم
+// يمكنك استخدام fetch أو طرق أخرى لإرسال الملف إلى الخادم
   </script>
 
 
