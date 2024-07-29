@@ -1,0 +1,31 @@
+name: API Example
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flask
+    - name: Run API
+      run: |
+        echo "from flask import Flask, jsonify" > app.py
+        echo "app = Flask(__name__)" >> app.py
+        echo "@app.route('/api/data')" >> app.py
+        echo "def get_data():" >> app.py
+        echo "    return jsonify({'message': 'Hello, world!'})" >> app.py
+        echo "if __name__ == '__main__':" >> app.py
+        echo "    app.run(host='0.0.0.0', port=8000)" >> app.py
+        python app.py
